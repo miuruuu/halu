@@ -157,3 +157,29 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
 @media(min-width:768px){.hx-h{height:72px}.hx-main{padding-top:96px}}
 @media(min-width:1024px){.hx-hi{padding:0 60px}.hx-logo{position:static;transform:none;margin-left:32px}.hx-hi>div:first-child{display:flex;align-items:center}.hx-me{display:flex}.pg-t nav{display:flex}.pf-2{grid-template-columns:1fr 300px}}
 .tx .ic{position:relative}.tx .ic::after{content:"";position:absolute;inset:0;margin:auto;width:14px;height:14px;border:2px solid #fff;border-radius:50%;box-sizing:border-box}
+/* ukuran hasil pengukuran: invoice */
+.inv-card{max-width:490px;margin:16px auto 0}
+.inv-in{padding:34px 30px 30px;font-size:16px}
+.inv-ic{width:60px;height:60px;margin-bottom:20px}
+.inv-in .hx-title{font-size:30px;line-height:38px}
+.inv-row{font-size:16px;padding:16px 12px}
+.inv-sec{font-size:16px;margin:16px 0 14px}
+.inv-box{padding:12px;font-size:16px}.inv-box div{padding:4px 0;line-height:24px}
+.inv-ok{color:#569417}
+.inv-tot{font-size:16px;padding:16px 0}
+.inv-in .hx-btn{height:40px;font-size:14px;padding:0 16px;gap:12px;text-transform:none}
+.inv-in .hx-btn::after{content:"›";display:inline-flex;align-items:center;justify-content:center;width:20px;height:20px;border-radius:50%;background:#fff;color:var(--red);font-size:16px;line-height:1}
+.inv-in .hx-btn.o::after{background:var(--red);color:#fff}
+/* tiket */
+.tk-head{padding:16px 24px;border-left:0;background:#fce6e8;font-size:20px}
+.tk-head i{padding:0 8px;line-height:24px;font-size:16px}
+.tk-grid{padding:16px 24px;gap:16px 16px;font-size:16px}
+.tk-grid small{font-size:14px;color:#a3a3a3}
+.tk-ok{background:#f2fae9;color:#437312;padding:4px 8px}
+.tk-mem{margin:16px 24px;padding:8px;border:1px solid #f5f5f5;gap:16px;align-items:center}
+.tk-mem .ph{width:186px;height:217px;background:#f5f5f5;display:flex;align-items:center;justify-content:center}
+.tk-mem small{font-size:12px}.tk-mem b{font-size:20px}
+.tk-foot{padding:0 24px 24px}
+.tk-box{border-color:#fce6e8}
+/* judul daftar */
+.bl-ban{border-radius:0}
