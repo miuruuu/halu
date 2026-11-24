@@ -183,3 +183,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
 .tk-box{border-color:#fce6e8}
 /* judul daftar */
 .bl-ban{border-radius:0}
+
+.qty{display:flex;align-items:center;border:1px solid #d0d5dd;border-radius:99px;overflow:hidden;margin-left:auto}
+.qty button{width:36px;height:36px;border:0;background:#fff;font-size:20px;cursor:pointer;color:var(--red)}.qty button:disabled{color:#bbb;cursor:not-allowed}
+.qty i{font-style:normal;min-width:28px;text-align:center;font-weight:700}
