@@ -15,6 +15,7 @@ var SAMPLE={id:'20261110-VCHALU-196',kind:'vc',title:'Senyum Halu Collection',am
 function find(id){var s=load();for(var i=0;i<s.tx.length;i++)if(s.tx[i].id===id)return s.tx[i];return id===SAMPLE.id||!id?SAMPLE:null}
 function nextId(kind,code){var d=new Date(),p=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');return p+'-'+code+'-'+(load().tx.length+1)}
 function plain(t){return t.kind==='topup'||t.kind==='ofc'||t.kind==='lib'}
+function before(t){var a=(+t.slice(0,2))*60+(+t.slice(3,5))-30;function f(x){return String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0')}return f(a)+' - '+f(a+30)+' WIB'}
 var H={plain:plain,fmt:fmt,esc:esc,toast:toast,load:load,save:save,nextId:nextId,tgl:tgl,hari:hari,jam:jam,find:find,SAMPLE:SAMPLE,
 home:function(){var s=load();$('pt').textContent=fmt(s.pt);var n=s.tx.filter(function(t){return !plain(t)}).length;$('nt').textContent=n;
 var b='',seed=7000100;for(var i=0;i<46;i++){seed=(seed*1103515245+12345)&0x7fffffff;b+='<i style="width:'+(1+seed%3)+'px"></i>'}$('bc').innerHTML=b;
@@ -38,7 +39,7 @@ buy:function(kind){var PR={mng:60000,vc:120000,'2s':100000},TI={mng:'Photocard A
 function upd(){$('qty').textContent=qty;$('ptotal').textContent=fmt(price*qty)+' Halu Points';$('minus').disabled=qty<=1;$('plus').disabled=qty>=MAX}
 $('minus').onclick=function(){if(qty>1){qty--;upd()}};$('plus').onclick=function(){if(qty<MAX){qty++;upd()}else toast('Maksimal '+MAX+' tiket per transaksi')};upd();var pm=new URLSearchParams(location.search).get('m');if(pm){var el=document.querySelector('input[name=m][data-n="'+pm.replace(/"/g,'')+'"]');if(el){el.checked=true;setTimeout(function(){el.scrollIntoView({block:'center'})},50)}}
 $('go').onclick=function(){var r=document.querySelector('input[name=m]:checked');if(!r){toast('Pilih member dulu');return}var s=load(),tot=price*qty;if(s.pt<tot){toast('Halu Point kurang ('+fmt(tot-s.pt)+' lagi), isi dulu ya');setTimeout(function(){location.href='topup.html'},1400);return}
-s.pt-=tot;var id=nextId(kind,code);s.tx.unshift({id:id,kind:kind,title:title,amount:-tot,qty:qty,ts:Date.now(),method:'HALU_POINT',member:r.dataset.n,sesi:+r.dataset.s,jalur:+r.dataset.j,time:r.dataset.t,date:'20 Desember 2026',tukar:'11:30 - 12:00 WIB'});save(s);location.href='invoice.html?id='+encodeURIComponent(id)};
+s.pt-=tot;var id=nextId(kind,code);s.tx.unshift({id:id,kind:kind,title:title,amount:-tot,qty:qty,ts:Date.now(),method:'HALU_POINT',member:r.dataset.n,sesi:+r.dataset.s,jalur:+r.dataset.j,time:r.dataset.t,date:r.dataset.d.split(', ').pop(),tukar:before(r.dataset.t)});save(s);location.href='invoice.html?id='+encodeURIComponent(id)};
 var p=$('pts');if(p)p.textContent=fmt(load().pt)},
 member:function(){var q=$('q'),cs=[].slice.call(document.querySelectorAll('.mb-c'));q.oninput=function(){var v=q.value.toLowerCase();cs.forEach(function(c){c.style.display=c.textContent.toLowerCase().indexOf(v)>-1?'':'none'})}}};
 window.Halu=H;
