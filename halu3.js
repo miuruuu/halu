@@ -37,7 +37,7 @@ function putar(){if(step>=TOTAL){hasil();return}num.textContent=step%2?'KALAH':'
 btn.onclick=function(){if(!over){hasil();return}if(closed)return;closed=true;m.remove();lanjut()};
 putar()}
 H.undianTiket=undianTiket;
-function gacha(seat,done,show){
+function gacha(seat,done,show,akhir){
 var isi=terisi(show);if(seat)delete isi[seat];
 var kosong=SEMUA.filter(function(k){return !isi[k]&&!ANAK[k]});
 var nIsi=Object.keys(isi).length-(seat&&isi[seat]?1:0),nSisa=kosong.length;
@@ -53,17 +53,38 @@ function lepas(){if(last)last.classList.remove('on','win')}
 function sorot(k,cls){lepas();last=m.querySelector('[data-k="'+k+'"]');last.classList.add(cls||'on');num.textContent=k}
 function tutup(){if(closed)return;closed=true;clearTimeout(timer);m.remove();done()}
 function hasil(){if(over)return;over=true;clearTimeout(timer);
-if(seat){sorot(seat,'win');m.querySelector('#gc-sisa').textContent=nSisa-1;m.querySelector('#gc-isi').textContent=nIsi+1;m.querySelector('#gc-und').textContent=nIsi+1;title.textContent='Kursi kamu';num.classList.add('win');btn.textContent='Lihat tiket halu'}
+if(seat){sorot(seat,'win');m.querySelector('#gc-sisa').textContent=nSisa-1;m.querySelector('#gc-isi').textContent=nIsi+1;m.querySelector('#gc-und').textContent=nIsi+1;title.textContent='Kursi kamu';num.classList.add('win');btn.textContent=akhir||'Lihat tiket halu'}
 else{lepas();num.textContent='✕';num.classList.add('lose');title.textContent='Tidak kebagian kursi';btn.textContent='Tutup'}
 timer=setTimeout(tutup,seat?1800:1600)}
 function putar(){if(step++>=TOTAL){hasil();return}sorot(kosong[Math.floor(Math.random()*kosong.length)]);timer=setTimeout(putar,50+Math.pow(step/TOTAL,3)*330)}
 btn.onclick=function(){if(over)tutup();else hasil()};
 if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){TOTAL=10;m.classList.add('tenang')}putar()}
 H.gacha=gacha;
+// lihat denah saja; kalau ada kursinya, disorot
+function denah(seat){
+var m=document.createElement('div');m.className='mdl gc lihat';
+m.innerHTML='<div class="mdl-b"><div class="gc-h">Denah Kursi</div><div class="gc-sub">TEATER KHAYALAN</div>'+(seat?'<div class="gc-box"><h3 class="gc-t">Kursi kamu</h3><div class="gc-n">'+esc(seat)+'</div></div>':'')
++'<p class="dn-k">Baris A paling depan.</p><p class="dn-k hp">Geser ke samping untuk lihat semua kursi.</p><div class="dn-p">PANGGUNG</div><div class="dn-s"><div class="dn">'+denahHtml({})+'</div></div>'
++'<div class="gc-leg"><span><i></i> <em>Kursi</em></span><span><i class="anak"></i> <em>Seat anak</em></span></div><button class="hx-btn o gc-x">Tutup</button></div>';
+document.body.appendChild(m);
+m.onclick=function(e){if(e.target===m||e.target.closest('.gc-x'))m.remove()};
+if(seat){var k=m.querySelector('[data-k="'+seat+'"]');if(k){k.classList.add('on');var g=m.querySelector('.dn-s');g.scrollLeft+=k.getBoundingClientRect().left-g.getBoundingClientRect().left-g.clientWidth/2}}}
+H.denah=denah;
+// latihan undian kursi: gratis, tidak menyentuh poin atau apply
+H.cobaKursi=function(){
+function gambar(){var a=load().coba||[];$('cb-n').textContent=a.length?a[0]:'?';$('cb-lihat').hidden=!a.length;
+$('cb-h').innerHTML=a.length?'<div class="cb-l">'+a.map(function(k){return '<button data-k="'+esc(k)+'">'+esc(k)+'</button>'}).join('')+'</div>':'<p class="empty">Belum pernah coba.</p>'}
+$('cb-go').onclick=function(){var show='s'+(1+Math.floor(Math.random()*999)),seat=seatBaru([],{show:show});
+gacha(seat,function(){var s=load();s.coba=[seat].concat(s.coba||[]).slice(0,12);save(s);gambar()},show,'Selesai')};
+$('cb-lihat').onclick=function(){denah((load().coba||[])[0])};
+$('cb-denah').onclick=function(){denah()};
+$('cb-h').onclick=function(e){var b=e.target.closest('button');if(b)denah(b.dataset.k)};
+gambar()};
 // ---------- apply teater
 H.apply=function(){var siap=false;var q=new URLSearchParams(location.search).get('s');var box=$('ap'),mine=$('mine');
-function list(){var s=load(),a=s.ap||[];mine.innerHTML=a.length?a.map(function(x){var sh=showBy(x.show)||['','2026-12-01','','Show',''];return '<div class="ap-i '+x.status+'"><div><b>'+esc(sh[3])+'</b><small>'+tglPanjang(sh[1])+'</small><small>'+(x.type==='ofc'?'OFC':'General')+'</small></div><div class="ap-s">'+(x.status==='wait'?'<button class="hx-btn" data-id="'+x.id+'">Lihat hasil undian</button>':x.status==='win'?'<b>MENANG</b><small>Kursi '+x.seat+'</small><button class="hx-btn" data-tk="'+x.id+'">Lihat tiket halu</button> <button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>':'<b>KALAH</b><small>Poin dikembalikan</small><button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>')+'</div></div>'}).join(''):'<p class="empty">Belum ada apply.</p>';if(siap)render()}
+function list(){var s=load(),a=s.ap||[];mine.innerHTML=a.length?a.map(function(x){var sh=showBy(x.show)||['','2026-12-01','','Show',''];return '<div class="ap-i '+x.status+'"><div><b>'+esc(sh[3])+'</b><small>'+tglPanjang(sh[1])+'</small><small>'+(x.type==='ofc'?'OFC':'General')+'</small></div><div class="ap-s">'+(x.status==='wait'?'<button class="hx-btn" data-id="'+x.id+'">Lihat hasil undian</button>':x.status==='win'?'<b>MENANG</b><small>Kursi '+x.seat+'</small><button class="hx-btn" data-tk="'+x.id+'">Lihat tiket halu</button> <button class="hx-btn o" data-kursi="'+x.seat+'">Lihat posisi kursi</button> <button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>':'<b>KALAH</b><small>Poin dikembalikan</small><button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>')+'</div></div>'}).join(''):'<p class="empty">Belum ada apply.</p>';if(siap)render()}
 mine.onclick=function(e){var b=e.target.closest('button');if(!b)return;var s=load();
+if(b.dataset.kursi){denah(b.dataset.kursi);return}
 if(b.dataset.id){var x=s.ap.filter(function(a){return a.id===b.dataset.id})[0];if(!x||x.status!=='wait')return;b.disabled=true;
 var win=Math.random()<(x.type==='ofc'?0.25:0.45);x.status=win?'win':'lose';if(win)x.seat=seatBaru(s.ap,x);else{s.pt+=PRICE;addTx(s,{kind:'refund',code:'REFUND',title:'Pengembalian Poin Undian',item:'Refund apply teater',amount:PRICE,method:'HALU_POINT'})}save(s);
 var sw=showBy(x.show);undianTiket(win,function(){if(!win){list();toast('Kalah, poin dikembalikan');return}gacha(x.seat,function(){list();share('tiket-halu',null,null,ticket(sw,x.seat))},x.show)})}
@@ -71,6 +92,7 @@ else if(b.dataset.tk){var z=s.ap.filter(function(a){return a.id===b.dataset.tk})
 else if(b.dataset.share){var y=s.ap.filter(function(a){return a.id===b.dataset.share})[0];share('hasil-undian-halu',null,null,surat(y,showBy(y.show)))}};
 // buka = bisa apply; gen = kalah di OFC, tinggal General; tutup = tidak bisa lagi
 function status(id){var a=(load().ap||[]).filter(function(x){return x.show===id});if(a.some(function(x){return x.status!=='lose'||x.type!=='ofc'}))return 'tutup';return a.length?'gen':'buka'}
+$('dn-b').onclick=function(){denah()};
 list();siap=true;
 function render(){var sh=showBy(q);if(!sh){var buka=SHOWS.filter(function(s){return status(s[0])!=='tutup'});if(!buka.length){box.innerHTML='<p class="empty">Semua show sudah kamu apply.</p>';return}box.innerHTML='<div class="sh-l">'+buka.map(function(s){return '<a class="sc-row" href="teater-tiket.html?s='+s[0]+'"><div class="sc-d">'+dt(s[1]).getDate()+'<small>'+(dt(s[1]).getMonth()===10?'NOV':'DES')+'</small></div><div><span class="tag">Team '+s[4]+'</span><b style="display:inline">'+esc(s[3])+'</b><br><small>'+s[2]+' WIB</small>'+(status(s[0])==='gen'?'<small class="lagi">Bisa apply lagi di General</small>':'')+'</div></a>'}).join('')+'</div>';return}
 var keadaan=status(sh[0]);if(keadaan==='tutup'){box.innerHTML='<div class="ct"><h3>'+esc(sh[3])+'</h3><p>Show ini sudah kamu apply. Cek hasilnya di bawah.</p><a class="hx-btn o" href="teater-tiket.html">Show lain</a></div>';return}
