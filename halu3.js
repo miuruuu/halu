@@ -15,15 +15,15 @@ function showBy(id){for(var i=0;i<SHOWS.length;i++)if(SHOWS[i][0]===id)return SH
 function lineup(s){var m=(H.TEAMS[s[4]]||'').split(','),o=(+s[0].slice(1))*3,r=[];for(var i=0;i<Math.min(16,m.length);i++)r.push(m[(i+o)%m.length]);return r}
 function topupSoon(){toast('Halu Point kurang, isi dulu ya');setTimeout(function(){location.href='topup.html'},1200)}
 function addTx(s,o){o.id=o.id||H.nextId(o.kind,o.code);delete o.code;o.ts=Date.now();s.tx.unshift(o);return o.id}
-// ---------- gacha kursi: baris A (depan panggung) sampai J, nomor 1-20 dari kiri
-var HURUF='ABCDEFGHIJ',NOMOR=20;
-function acak(){return HURUF[Math.floor(Math.random()*HURUF.length)]+'-'+(1+Math.floor(Math.random()*NOMOR))}
+// ---------- gacha kursi: 7 baris (A depan panggung), 4 blok; jumlah per blok perkiraan dari denah 2015, total ~260
+var DENAH={A:[5,11,11,5],B:[10,11,11,10],C:[13,11,11,13],D:[13,11,11,13],E:[8,11,11,8],F:[5,11,11,5],G:[0,11,11,0]};
+var SEMUA=[];Object.keys(DENAH).forEach(function(h){var t=DENAH[h].reduce(function(a,b){return a+b},0);for(var n=1;n<=t;n++)SEMUA.push(h+'-'+n)});
+function acak(){return SEMUA[Math.floor(Math.random()*SEMUA.length)]}
 function seatBaru(ap,x){var pakai={},k;ap.forEach(function(a){if(a!==x&&a.show===x.show&&a.seat)pakai[a.seat]=1});do{k=acak()}while(pakai[k]);return k}
+function denahHtml(){return Object.keys(DENAH).map(function(h){var n=0;return '<div class="dn-r"><b>'+h+'</b>'+DENAH[h].map(function(j,g){var c='';for(var i=0;i<j;i++){n++;c+='<i data-k="'+h+'-'+n+'"></i>'}return '<span class="dn-g g'+g+'">'+c+'</span>'}).join('')+'</div>'}).join('')}
 function gacha(seat,done){
-var m=document.createElement('div');m.className='mdl gc';var head='<span></span>',rows='';
-for(var n=1;n<=NOMOR;n++)head+='<b>'+n+'</b>';
-for(var r=0;r<HURUF.length;r++){rows+='<b>'+HURUF[r]+'</b>';for(var c=1;c<=NOMOR;c++)rows+='<i data-k="'+HURUF[r]+'-'+c+'"></i>'}
-m.innerHTML='<div class="mdl-b"><h3 class="gc-t">Mengundi kursi…</h3><div class="gc-n" aria-live="polite">?</div><div class="gc-s">PANGGUNG</div><div class="gc-g">'+head+rows+'</div><button class="hx-btn o gc-x">Lewati</button></div>';
+var m=document.createElement('div');m.className='mdl gc';
+m.innerHTML='<div class="mdl-b"><h3 class="gc-t">Mengundi kursi…</h3><div class="gc-n" aria-live="polite">?</div><div class="dn"><div class="dn-top"><span class="dn-in">PINTU</span><span class="gc-s">PANGGUNG</span></div><div class="dn-rows">'+denahHtml()+'</div><div class="dn-foh"><span class="vip">VIP</span><span class="foh">F.O.H.</span></div></div><button class="hx-btn o gc-x">Lewati</button></div>';
 document.body.appendChild(m);
 var num=m.querySelector('.gc-n'),title=m.querySelector('.gc-t'),btn=m.querySelector('.gc-x'),last,timer,step=0,TOTAL=34,over=false,closed=false;
 function sorot(k,cls){if(last)last.className='';last=m.querySelector('[data-k="'+k+'"]');last.className=cls||'on';num.textContent=k}

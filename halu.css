@@ -295,23 +295,25 @@ details.ct summary{font-weight:700;font-size:15px;cursor:pointer}
 .shb{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}.shb .hx-btn{height:36px;padding:0 16px;font-size:13px}.mdl-b .shb a.hx-btn:not(.o){color:#fff}
 .mdl-b{max-height:92vh;overflow:auto}
 
-/* gacha kursi */
-.gc .mdl-b{max-width:340px;padding:18px 14px}
+/* gacha kursi: denah teater */
+.gc .mdl-b{max-width:520px;padding:18px 10px}
 .gc-t{margin:0;font-size:15px}
 .gc-n{font-size:44px;font-weight:800;color:var(--ink);line-height:1.2;font-variant-numeric:tabular-nums}
 .gc-n.win{color:#1faa59;animation:gc-pop .5s ease}.gc-n.lose{color:var(--red)}
-.gc-s{background:#020817;color:#fff;font-size:11px;font-weight:700;letter-spacing:.3em;padding:5px;border-radius:0 0 40% 40%;margin:4px 18px 8px}
-.gc-g{display:grid;grid-template-columns:18px repeat(10,1fr);gap:2px;margin-bottom:12px;align-items:center}
-.gc-g b{font-size:9px;color:#888;line-height:1}
-.gc-g i{display:block;height:min(13px,2vh);border-radius:3px 3px 1px 1px;background:#e6e6e6}
-.gc-g i.on{background:var(--red);box-shadow:0 0 8px var(--red)}
-.gc-g i.win{background:#1faa59;box-shadow:0 0 10px 3px #1faa59;animation:gc-blink .4s ease 4 alternate}
+.dn{background:#dcdee2;border-radius:6px 6px 50% 50%/6px 6px 34% 34%;padding:0 6px 8px;margin:4px 0 12px}
+.dn-top{position:relative;display:flex;justify-content:center;margin-bottom:12px}
+.dn-in{position:absolute;left:0;top:4px;font-size:8px;font-weight:700;color:#444}
+.gc-s{background:#020817;color:#fff;font-size:11px;font-weight:700;letter-spacing:.3em;width:68%;padding:min(18px,2.6vh) 0}
+.dn-r{display:grid;grid-template-columns:10px 13fr 11fr 11fr 13fr;gap:3px;align-items:center;margin-bottom:min(8px,1.2vh);padding-right:10px}
+.dn-r b{font-size:9px;color:#555}
+.dn-g{display:flex;gap:1px;min-width:0}.dn-g.g0{justify-content:flex-end}.dn-g.g1{margin-right:3px}.dn-g.g2{margin-left:3px}
+.dn-g i{display:block;flex:0 0 calc((100% - 12px)/13);height:min(13px,1.9vh);border-radius:2px;background:#fff}
+.dn-g.g1 i,.dn-g.g2 i{flex-basis:calc((100% - 10px)/11)}
+.dn-g i.on{background:var(--red);box-shadow:0 0 8px 2px var(--red)}
+.dn-g i.win{background:#1faa59;box-shadow:0 0 10px 3px #1faa59;animation:gc-blink .4s ease 4 alternate}
+.dn-foh{display:flex;justify-content:center;gap:14px;align-items:center;margin-top:6px;font-size:10px;font-weight:700}
+.dn-foh .vip{background:#e88;color:#400;padding:3px 8px}.dn-foh .foh{background:#020817;color:#fff;padding:6px 22px}
 .gc .hx-btn{height:34px;font-size:13px}
+.gc.tenang .gc-n,.gc.tenang .dn-g i{animation:none}
 @keyframes gc-pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
-@keyframes gc-blink{from{transform:scale(1)}to{transform:scale(1.7)}}
-.gc.tenang .gc-n,.gc.tenang .gc-g i{animation:none}
-.gc .mdl-b{max-width:520px;padding:18px 10px}
-.gc-g{grid-template-columns:14px repeat(20,minmax(0,1fr));gap:3px 2px}
-.gc-g b{font-size:8px;letter-spacing:-.03em}
-.gc-g i{height:18px}
-.gc-s{margin:4px 30px 10px}
+@keyframes gc-blink{from{transform:scale(1)}to{transform:scale(1.9)}}
