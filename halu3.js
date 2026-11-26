@@ -15,26 +15,27 @@ function showBy(id){for(var i=0;i<SHOWS.length;i++)if(SHOWS[i][0]===id)return SH
 function lineup(s){var m=(H.TEAMS[s[4]]||'').split(','),o=(+s[0].slice(1))*3,r=[];for(var i=0;i<Math.min(16,m.length);i++)r.push(m[(i+o)%m.length]);return r}
 function topupSoon(){toast('Halu Point kurang, isi dulu ya');setTimeout(function(){location.href='topup.html'},1200)}
 function addTx(s,o){o.id=o.id||H.nextId(o.kind,o.code);delete o.code;o.ts=Date.now();s.tx.unshift(o);return o.id}
-// ---------- gacha kursi: A-B diapit pilar, C-F tengah, G-H belakang; blok biru kiri, hijau kanan. Jumlah kursi perkiraan (~260)
-var DENAH={};'ABCDEFGH'.split('').forEach(function(h){DENAH[h]=h<'C'?[4,9,9,4]:[8,9,9,8]});
-var SEMUA=[];Object.keys(DENAH).forEach(function(h){var t=DENAH[h].reduce(function(a,b){return a+b},0);for(var n=1;n<=t;n++)SEMUA.push(h+'-'+n)});
-function acak(){return SEMUA[Math.floor(Math.random()*SEMUA.length)]}
-function seatBaru(ap,x){var pakai={},k;ap.forEach(function(a){if(a!==x&&a.show===x.show&&a.seat)pakai[a.seat]=1});do{k=acak()}while(pakai[k]);return k}
-function denahHtml(){return Object.keys(DENAH).map(function(h){var n=0;
-var baris='<b>'+h+'</b>'+DENAH[h].map(function(j,g){var c='';for(var i=0;i<j;i++){n++;if(j===4&&i===2)c+='<span class="dn-p"></span>';c+='<i data-k="'+h+'-'+n+'"></i>'}return '<span class="dn-g g'+g+(j===4?' pl':'')+(h==='A'&&j===4?' atas':'')+'">'+c+'</span>'}).join('');
-return (h==='C'?'<div class="dn-r far"><b></b><span></span><em>Super Far Seats</em><span></span></div>':'')+'<div class="dn-r'+(h==='G'?' belakang':'')+'">'+baris+'</div>'}).join('')}
-function gacha(seat,done){
+// ---------- gacha kursi: baris A-J, nomor 1-20 (blok kiri 1-10, blok kanan 11-20)
+var BARIS='ABCDEFGHIJ',SEMUA=[];BARIS.split('').forEach(function(h){for(var n=1;n<=20;n++)SEMUA.push(h+'-'+n)});
+// kursi "sudah terisi" pura-pura, sama untuk show yang sama
+function terisi(show){var s=(+String(show).slice(1)||1)*7919,o={};SEMUA.forEach(function(k){s=(s*48271)%2147483647;if(s%100<55)o[k]=1});return o}
+function seatBaru(ap,x){var t=terisi(x.show);ap.forEach(function(a){if(a!==x&&a.show===x.show&&a.seat)t[a.seat]=1});var k=SEMUA.filter(function(k){return !t[k]});return k[Math.floor(Math.random()*k.length)]}
+function denahHtml(isi){return BARIS.split('').map(function(h){function blok(a){var c='';for(var n=a;n<a+10;n++){var k=h+'-'+n;c+='<i data-k="'+k+'"'+(isi[k]?' class="isi"':'')+'></i>'}return '<span class="dn-g">'+c+'</span>'}return '<div class="dn-r"><b>'+h+'</b>'+blok(1)+blok(11)+'</div>'}).join('')}
+function gacha(seat,done,show){
+var isi=terisi(show);if(seat)delete isi[seat];
+var kosong=SEMUA.filter(function(k){return !isi[k]});
 var m=document.createElement('div');m.className='mdl gc';
-m.innerHTML='<div class="mdl-b"><h3 class="gc-t">Mengundi kursi…</h3><div class="gc-n" aria-live="polite">?</div><div class="dn"><div class="dn-top"><span class="dn-in">EXIT</span><span class="gc-s">PANGGUNG</span></div><div class="dn-lane">Pintu masuk / keluar ↕</div><div class="dn-rows">'+denahHtml()+'</div><div class="dn-foh"><span class="dn-st">Area berdiri</span><span class="dn-staf">Staf</span><span class="dn-st r">Area berdiri</span></div></div><button class="hx-btn o gc-x">Lewati</button></div>';
+m.innerHTML='<div class="mdl-b"><h3 class="gc-t">Mengundi kursi…</h3><div class="gc-n" aria-live="polite">?</div><div class="dn"><div class="gc-s">PANGGUNG</div><div class="dn-k"><span></span><small>1–10</small><small>11–20</small></div>'+denahHtml(isi)+'<div class="dn-l"><span><i class="isi"></i> <em>Terisi</em></span><span><i></i> <em>Kosong</em></span></div></div><button class="hx-btn o gc-x">Lewati</button></div>';
 document.body.appendChild(m);
 var num=m.querySelector('.gc-n'),title=m.querySelector('.gc-t'),btn=m.querySelector('.gc-x'),last,timer,step=0,TOTAL=34,over=false,closed=false;
-function sorot(k,cls){if(last)last.className='';last=m.querySelector('[data-k="'+k+'"]');last.className=cls||'on';num.textContent=k}
+function lepas(){if(last)last.classList.remove('on','win')}
+function sorot(k,cls){lepas();last=m.querySelector('[data-k="'+k+'"]');last.classList.add(cls||'on');num.textContent=k}
 function tutup(){if(closed)return;closed=true;clearTimeout(timer);m.remove();done()}
 function hasil(){if(over)return;over=true;clearTimeout(timer);
 if(seat){sorot(seat,'win');title.textContent='Kursi kamu';num.classList.add('win');btn.textContent='Lihat tiket halu'}
-else{if(last)last.className='';num.textContent='✕';num.classList.add('lose');title.textContent='Tidak kebagian kursi';btn.textContent='Tutup'}
+else{lepas();num.textContent='✕';num.classList.add('lose');title.textContent='Tidak kebagian kursi';btn.textContent='Tutup'}
 timer=setTimeout(tutup,seat?1800:1600)}
-function putar(){if(step++>=TOTAL){hasil();return}sorot(acak());timer=setTimeout(putar,50+Math.pow(step/TOTAL,3)*330)}
+function putar(){if(step++>=TOTAL){hasil();return}sorot(kosong[Math.floor(Math.random()*kosong.length)]);timer=setTimeout(putar,50+Math.pow(step/TOTAL,3)*330)}
 btn.onclick=function(){if(over)tutup();else hasil()};
 if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){TOTAL=10;m.classList.add('tenang')}putar()}
 H.gacha=gacha;
@@ -44,7 +45,7 @@ function list(){var s=load(),a=s.ap||[];mine.innerHTML=a.length?a.map(function(x
 mine.onclick=function(e){var b=e.target.closest('button');if(!b)return;var s=load();
 if(b.dataset.id){var x=s.ap.filter(function(a){return a.id===b.dataset.id})[0];if(!x||x.status!=='wait')return;b.disabled=true;
 var win=Math.random()<(x.type==='ofc'?0.7:0.45);x.status=win?'win':'lose';if(win)x.seat=seatBaru(s.ap,x);else{s.pt+=PRICE;addTx(s,{kind:'refund',code:'REFUND',title:'Pengembalian Poin Undian',item:'Refund apply teater',amount:PRICE,method:'HALU_POINT'})}save(s);
-var sw=showBy(x.show);gacha(win?x.seat:null,function(){list();if(win)share('tiket-halu',null,null,ticket(sw,x.seat));else toast('Kalah, poin dikembalikan')})}
+var sw=showBy(x.show);gacha(win?x.seat:null,function(){list();if(win)share('tiket-halu',null,null,ticket(sw,x.seat));else toast('Kalah, poin dikembalikan')},x.show)}
 else if(b.dataset.tk){var z=s.ap.filter(function(a){return a.id===b.dataset.tk})[0],zs=showBy(z.show);share('tiket-halu',null,null,ticket(zs,z.seat))}
 else if(b.dataset.share){var y=s.ap.filter(function(a){return a.id===b.dataset.share})[0];share('hasil-undian-halu',null,null,surat(y,showBy(y.show)))}};
 list();
