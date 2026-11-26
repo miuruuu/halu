@@ -14,7 +14,7 @@ function $(i){return document.getElementById(i)}
 var SAMPLE={id:'20261110-VCHALU-196',kind:'vc',title:'Senyum Halu Collection',amount:-120000,ts:Date.UTC(2026,10,10,12,12),method:'HALU_POINT',member:'Nur Intan',sesi:1,jalur:4,time:'16:30 - 17:30 WIB',date:'24 November 2026',tukar:'16:15 - 16:45 WIB',sample:1};
 function find(id){var s=load();for(var i=0;i<s.tx.length;i++)if(s.tx[i].id===id)return s.tx[i];return id===SAMPLE.id||!id?SAMPLE:null}
 function nextId(kind,code){var d=new Date(),p=d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0');return p+'-'+code+'-'+(load().tx.length+1)}
-function plain(t){return t.kind==='topup'||t.kind==='ofc'||t.kind==='lib'}
+function plain(t){return t.kind==='topup'||t.kind==='ofc'||t.kind==='lib'||t.kind==='show'||t.kind==='refund'}
 function before(t){var a=(+t.slice(0,2))*60+(+t.slice(3,5))-30;function f(x){return String(Math.floor(x/60)).padStart(2,'0')+':'+String(x%60).padStart(2,'0')}return f(a)+' - '+f(a+30)+' WIB'}
 var H={plain:plain,fmt:fmt,esc:esc,toast:toast,load:load,save:save,nextId:nextId,tgl:tgl,hari:hari,jam:jam,find:find,SAMPLE:SAMPLE,
 home:function(){var s=load();$('pt').textContent=fmt(s.pt);var n=s.tx.filter(function(t){return !plain(t)}).length;$('nt').textContent=n;

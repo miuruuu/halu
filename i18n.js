@@ -78,8 +78,9 @@ R=[
 [/ \(gratis\)$/,' (free)']
 ];
 }
+var X=window.HALU_X||{};Object.keys(X).forEach(function(k){D[k]=X[k][lang==='en'?1:0]});
 function tr(s){var t=s.replace(/\s+/g,' ').trim();if(!t)return s;var o=D[t];if(o===undefined){o=t;R.forEach(function(r){o=o.replace(r[0],r[1])});if(D[o]!==undefined)o=D[o];if(o===t)return s}return s.match(/^\s*/)[0]+o+s.match(/\s*$/)[0]}
-function walk(n){if(n.nodeType===3){var v=tr(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v;return}if(n.nodeType!==1||/^(SCRIPT|STYLE|TEXTAREA|svg)$/i.test(n.tagName))return;
+function walk(n){if(n.nodeType===3){var v=tr(n.nodeValue);if(v!==n.nodeValue)n.nodeValue=v;return}if(n.nodeType!==1||/^(SCRIPT|STYLE|TEXTAREA)$/i.test(n.tagName))return;
 ['placeholder','aria-label'].forEach(function(a){var x=n.getAttribute(a);if(x){var y=tr(x);if(y!==x)n.setAttribute(a,y)}});for(var c=n.firstChild;c;c=c.nextSibling)walk(c)}
 function btns(box){box.innerHTML=['id','en','ja'].map(function(l){return '<button type="button" data-l="'+l+'"'+(l===lang?' class="on"':'')+'>'+LB[l]+'</button>'}).join('');[].forEach.call(box.querySelectorAll('button'),function(b){b.onclick=function(){setLang(b.dataset.l)}})}
 function bindSwitch(){
