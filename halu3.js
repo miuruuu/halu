@@ -15,24 +15,32 @@ function showBy(id){for(var i=0;i<SHOWS.length;i++)if(SHOWS[i][0]===id)return SH
 function lineup(s){var m=(H.TEAMS[s[4]]||'').split(','),o=(+s[0].slice(1))*3,r=[];for(var i=0;i<Math.min(16,m.length);i++)r.push(m[(i+o)%m.length]);return r}
 function topupSoon(){toast('Halu Point kurang, isi dulu ya');setTimeout(function(){location.href='topup.html'},1200)}
 function addTx(s,o){o.id=o.id||H.nextId(o.kind,o.code);delete o.code;o.ts=Date.now();s.tx.unshift(o);return o.id}
-// ---------- gacha kursi: baris A-J, nomor 1-20 (blok kiri 1-10, blok kanan 11-20)
-var BARIS='ABCDEFGHIJ',SEMUA=[];BARIS.split('').forEach(function(h){for(var n=1;n<=20;n++)SEMUA.push(h+'-'+n)});
-// kursi "sudah terisi" pura-pura, sama untuk show yang sama
-function terisi(show){var s=(+String(show).slice(1)||1)*7919,o={};SEMUA.forEach(function(k){s=(s*48271)%2147483647;if(s%100<55)o[k]=1});return o}
-function seatBaru(ap,x){var t=terisi(x.show);ap.forEach(function(a){if(a!==x&&a.show===x.show&&a.seat)t[a.seat]=1});var k=SEMUA.filter(function(k){return !t[k]});return k[Math.floor(Math.random()*k.length)]}
-function denahHtml(isi){return BARIS.split('').map(function(h){function blok(a){var c='';for(var n=a;n<a+10;n++){var k=h+'-'+n;c+='<i data-k="'+k+'"'+(isi[k]?' class="isi"':'')+'></i>'}return '<span class="dn-g">'+c+'</span>'}return '<div class="dn-r"><b>'+h+'</b>'+blok(1)+blok(11)+'</div>'}).join('')}
+// ---------- gacha kursi: baris A-J, jumlah per baris berbeda: [blok kiri, blok kanan]
+var DENAH={A:[10,11],B:[11,12],C:[12,13],D:[13,13],E:[13,13],F:[13,13],G:[12,12],H:[11,11],I:[10,10],J:[9,9]};
+var ANAK={'A-6':1,'A-7':1,'A-8':1,'A-9':1,'A-10':1};
+var SEMUA=[];Object.keys(DENAH).forEach(function(h){for(var n=1;n<=DENAH[h][0]+DENAH[h][1];n++)SEMUA.push(h+'-'+n)});
+// kursi "sudah terpilih" pura-pura, sama untuk show yang sama
+function terisi(show){var s=(+String(show).slice(1)||1)*7919,o={};SEMUA.forEach(function(k){s=(s*48271)%2147483647;if(!ANAK[k]&&s%100<60)o[k]=1});return o}
+function seatBaru(ap,x){var t=terisi(x.show);ap.forEach(function(a){if(a!==x&&a.show===x.show&&a.seat)t[a.seat]=1});var k=SEMUA.filter(function(k){return !t[k]&&!ANAK[k]});return k[Math.floor(Math.random()*k.length)]}
+function denahHtml(isi){return Object.keys(DENAH).map(function(h){var n=0;function blok(j,g){var c='';for(var i=0;i<j;i++){n++;var k=h+'-'+n,cl=isi[k]?'isi':ANAK[k]?'anak':'';c+='<i data-k="'+k+'"'+(cl?' class="'+cl+'"':'')+'>'+k+'</i>'}return '<span class="dn-g g'+g+'">'+c+'</span>'}
+return '<div class="dn-r"><b>'+h+'</b>'+blok(DENAH[h][0],0)+blok(DENAH[h][1],1)+'</div>'}).join('')}
 function gacha(seat,done,show){
 var isi=terisi(show);if(seat)delete isi[seat];
-var kosong=SEMUA.filter(function(k){return !isi[k]});
+var kosong=SEMUA.filter(function(k){return !isi[k]&&!ANAK[k]});
+var nIsi=Object.keys(isi).length-(seat&&isi[seat]?1:0),nSisa=kosong.length;
 var m=document.createElement('div');m.className='mdl gc';
-m.innerHTML='<div class="mdl-b"><h3 class="gc-t">Mengundi kursi…</h3><div class="gc-n" aria-live="polite">?</div><div class="dn"><div class="gc-s">PANGGUNG</div><div class="dn-k"><span></span><small>1–10</small><small>11–20</small></div>'+denahHtml(isi)+'<div class="dn-l"><span><i class="isi"></i> <em>Terisi</em></span><span><i></i> <em>Kosong</em></span></div></div><button class="hx-btn o gc-x">Lewati</button></div>';
+m.innerHTML='<div class="mdl-b"><div class="gc-h">HALU THEATER SEAT LOTTERY</div><div class="gc-sub">TEATER KHAYALAN</div>'
++'<div class="gc-leg"><span><i></i> <em>Tersedia</em></span><span><i class="isi"></i> <em>Terpilih</em></span><span><i class="anak"></i> <em>Seat anak</em></span></div>'
++'<div class="gc-st"><div><b id="gc-sisa">'+nSisa+'</b><small>Sisa kursi</small></div><div><b id="gc-isi">'+nIsi+'</b><small>Kursi terpilih</small></div><div><b id="gc-und">'+nIsi+'</b><small>Total undian</small></div></div>'
++'<div class="gc-box"><h3 class="gc-t">Mengundi kursi…</h3><div class="gc-n" aria-live="polite">?</div></div>'
++'<div class="dn">'+denahHtml(isi)+'</div><button class="hx-btn o gc-x">Lewati</button></div>';
 document.body.appendChild(m);
 var num=m.querySelector('.gc-n'),title=m.querySelector('.gc-t'),btn=m.querySelector('.gc-x'),last,timer,step=0,TOTAL=34,over=false,closed=false;
 function lepas(){if(last)last.classList.remove('on','win')}
 function sorot(k,cls){lepas();last=m.querySelector('[data-k="'+k+'"]');last.classList.add(cls||'on');num.textContent=k}
 function tutup(){if(closed)return;closed=true;clearTimeout(timer);m.remove();done()}
 function hasil(){if(over)return;over=true;clearTimeout(timer);
-if(seat){sorot(seat,'win');title.textContent='Kursi kamu';num.classList.add('win');btn.textContent='Lihat tiket halu'}
+if(seat){sorot(seat,'win');m.querySelector('#gc-sisa').textContent=nSisa-1;m.querySelector('#gc-isi').textContent=nIsi+1;m.querySelector('#gc-und').textContent=nIsi+1;title.textContent='Kursi kamu';num.classList.add('win');btn.textContent='Lihat tiket halu'}
 else{lepas();num.textContent='✕';num.classList.add('lose');title.textContent='Tidak kebagian kursi';btn.textContent='Tutup'}
 timer=setTimeout(tutup,seat?1800:1600)}
 function putar(){if(step++>=TOTAL){hasil();return}sorot(kosong[Math.floor(Math.random()*kosong.length)]);timer=setTimeout(putar,50+Math.pow(step/TOTAL,3)*330)}
