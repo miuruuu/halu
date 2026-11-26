@@ -24,6 +24,19 @@ function terisi(show){var s=(+String(show).slice(1)||1)*7919,o={};SEMUA.forEach(
 function seatBaru(ap,x){var t=terisi(x.show);ap.forEach(function(a){if(a!==x&&a.show===x.show&&a.seat)t[a.seat]=1});var k=SEMUA.filter(function(k){return !t[k]&&!ANAK[k]});return k[Math.floor(Math.random()*k.length)]}
 function denahHtml(isi){return Object.keys(DENAH).map(function(h){var n=0;function blok(j,g){var c='';for(var i=0;i<j;i++){n++;var k=h+'-'+n,cl=isi[k]?'isi':ANAK[k]?'anak':'';c+='<i data-k="'+k+'"'+(cl?' class="'+cl+'"':'')+'>'+k+'</i>'}return '<span class="dn-g g'+g+'">'+c+'</span>'}
 return '<div class="dn-r"><b>'+h+'</b>'+blok(DENAH[h][0],0)+blok(DENAH[h][1],1)+'</div>'}).join('')}
+// tahap 1: dapat tiket atau tidak. Kursi baru diundi (tahap 2) kalau dapat.
+function undianTiket(win,lanjut){
+var m=document.createElement('div');m.className='mdl gc u1';
+m.innerHTML='<div class="mdl-b"><div class="gc-h">HALU THEATER TICKET LOTTERY</div><div class="gc-sub">Tahap 1 dari 2</div><div class="gc-box"><h3 class="gc-t">Mengundi tiket…</h3><div class="gc-n" aria-live="polite">?</div></div><p class="u1-p"></p><button class="hx-btn o gc-x">Lewati</button></div>';
+document.body.appendChild(m);
+var num=m.querySelector('.gc-n'),title=m.querySelector('.gc-t'),btn=m.querySelector('.gc-x'),ket=m.querySelector('.u1-p'),timer,step=0,TOTAL=22,over=false,closed=false;
+if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){TOTAL=8;m.classList.add('tenang')}
+function hasil(){if(over)return;over=true;clearTimeout(timer);title.textContent='Hasil undian tiket';num.textContent=win?'MENANG':'KALAH';num.classList.add(win?'win':'lose');
+ket.textContent=win?'Kamu dapat tiket! Lanjut undi kursinya.':'Kamu tidak dapat tiket. Poin dikembalikan.';btn.textContent=win?'Undi kursi':'Tutup'}
+function putar(){if(step>=TOTAL){hasil();return}num.textContent=step%2?'KALAH':'MENANG';step++;timer=setTimeout(putar,80+Math.pow(step/TOTAL,3)*320)}
+btn.onclick=function(){if(!over){hasil();return}if(closed)return;closed=true;m.remove();lanjut()};
+putar()}
+H.undianTiket=undianTiket;
 function gacha(seat,done,show){
 var isi=terisi(show);if(seat)delete isi[seat];
 var kosong=SEMUA.filter(function(k){return !isi[k]&&!ANAK[k]});
@@ -53,7 +66,7 @@ function list(){var s=load(),a=s.ap||[];mine.innerHTML=a.length?a.map(function(x
 mine.onclick=function(e){var b=e.target.closest('button');if(!b)return;var s=load();
 if(b.dataset.id){var x=s.ap.filter(function(a){return a.id===b.dataset.id})[0];if(!x||x.status!=='wait')return;b.disabled=true;
 var win=Math.random()<(x.type==='ofc'?0.2:0.4);x.status=win?'win':'lose';if(win)x.seat=seatBaru(s.ap,x);else{s.pt+=PRICE;addTx(s,{kind:'refund',code:'REFUND',title:'Pengembalian Poin Undian',item:'Refund apply teater',amount:PRICE,method:'HALU_POINT'})}save(s);
-var sw=showBy(x.show);gacha(win?x.seat:null,function(){list();if(win)share('tiket-halu',null,null,ticket(sw,x.seat));else toast('Kalah, poin dikembalikan')},x.show)}
+var sw=showBy(x.show);undianTiket(win,function(){if(!win){list();toast('Kalah, poin dikembalikan');return}gacha(x.seat,function(){list();share('tiket-halu',null,null,ticket(sw,x.seat))},x.show)})}
 else if(b.dataset.tk){var z=s.ap.filter(function(a){return a.id===b.dataset.tk})[0],zs=showBy(z.show);share('tiket-halu',null,null,ticket(zs,z.seat))}
 else if(b.dataset.share){var y=s.ap.filter(function(a){return a.id===b.dataset.share})[0];share('hasil-undian-halu',null,null,surat(y,showBy(y.show)))}};
 // buka = bisa apply; gen = kalah di OFC, tinggal General; tutup = tidak bisa lagi
