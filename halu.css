@@ -274,3 +274,6 @@ details.ct summary{font-weight:700;font-size:15px;cursor:pointer}
 .fm-2{display:grid;grid-template-columns:1fr 1fr;column-gap:16px}
 .buy-r{background:#fff}
 .lb-g{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+.dr-lg button{background:none;border:0;color:#fff;font:inherit;cursor:pointer;padding:6px}.dr-lg button.on{color:#ff5d68;font-weight:800}
+.lg-m{position:absolute;right:0;top:48px;background:#fff;box-shadow:0 6px 28px #0003;border-radius:8px;padding:6px;z-index:80;display:flex;flex-direction:column}.lg-m[hidden]{display:none}
+.lg-m button{border:0;background:none;padding:8px 22px;font:600 14px inherit;font-family:inherit;cursor:pointer}.lg-m button.on{color:var(--red)}
