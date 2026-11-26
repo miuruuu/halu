@@ -294,3 +294,19 @@ details.ct summary{font-weight:700;font-size:15px;cursor:pointer}
 .br2{display:flex;align-items:center;gap:12px;font-size:14px;padding:8px 0;border-bottom:1px solid #eee}.br2 .ph{width:36px;height:44px;background:#e6e6e6;display:flex;align-items:center;justify-content:center;flex:none}.br2 b{flex:1}
 .shb{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:12px}.shb .hx-btn{height:36px;padding:0 16px;font-size:13px}.mdl-b .shb a.hx-btn:not(.o){color:#fff}
 .mdl-b{max-height:92vh;overflow:auto}
+
+/* gacha kursi */
+.gc .mdl-b{max-width:340px;padding:18px 14px}
+.gc-t{margin:0;font-size:15px}
+.gc-n{font-size:44px;font-weight:800;color:var(--ink);line-height:1.2;font-variant-numeric:tabular-nums}
+.gc-n.win{color:#1faa59;animation:gc-pop .5s ease}.gc-n.lose{color:var(--red)}
+.gc-s{background:#020817;color:#fff;font-size:11px;font-weight:700;letter-spacing:.3em;padding:5px;border-radius:0 0 40% 40%;margin:4px 18px 8px}
+.gc-g{display:grid;grid-template-columns:18px repeat(10,1fr);gap:2px;margin-bottom:12px;align-items:center}
+.gc-g b{font-size:9px;color:#888;line-height:1}
+.gc-g i{display:block;height:min(13px,2vh);border-radius:3px 3px 1px 1px;background:#e6e6e6}
+.gc-g i.on{background:var(--red);box-shadow:0 0 8px var(--red)}
+.gc-g i.win{background:#1faa59;box-shadow:0 0 10px 3px #1faa59;animation:gc-blink .4s ease 4 alternate}
+.gc .hx-btn{height:34px;font-size:13px}
+@keyframes gc-pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
+@keyframes gc-blink{from{transform:scale(1)}to{transform:scale(1.7)}}
+.gc.tenang .gc-n,.gc.tenang .gc-g i{animation:none}

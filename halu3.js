@@ -15,12 +15,33 @@ function showBy(id){for(var i=0;i<SHOWS.length;i++)if(SHOWS[i][0]===id)return SH
 function lineup(s){var m=(H.TEAMS[s[4]]||'').split(','),o=(+s[0].slice(1))*3,r=[];for(var i=0;i<Math.min(16,m.length);i++)r.push(m[(i+o)%m.length]);return r}
 function topupSoon(){toast('Halu Point kurang, isi dulu ya');setTimeout(function(){location.href='topup.html'},1200)}
 function addTx(s,o){o.id=o.id||H.nextId(o.kind,o.code);delete o.code;o.ts=Date.now();s.tx.unshift(o);return o.id}
+// ---------- gacha kursi: huruf A-J ke samping, nomor 1-20 ke belakang
+var HURUF='ABCDEFGHIJ',BARIS=20;
+function acak(){return HURUF[Math.floor(Math.random()*HURUF.length)]+'-'+(1+Math.floor(Math.random()*BARIS))}
+function seatBaru(ap,x){var pakai={},k;ap.forEach(function(a){if(a!==x&&a.show===x.show&&a.seat)pakai[a.seat]=1});do{k=acak()}while(pakai[k]);return k}
+function gacha(seat,done){
+var m=document.createElement('div');m.className='mdl gc';var head='<span></span>'+HURUF.split('').map(function(h){return '<b>'+h+'</b>'}).join(''),rows='';
+for(var r=1;r<=BARIS;r++){rows+='<b>'+r+'</b>';for(var c=0;c<HURUF.length;c++)rows+='<i data-k="'+HURUF[c]+'-'+r+'"></i>'}
+m.innerHTML='<div class="mdl-b"><h3 class="gc-t">Mengundi kursi…</h3><div class="gc-n" aria-live="polite">?</div><div class="gc-s">PANGGUNG</div><div class="gc-g">'+head+rows+'</div><button class="hx-btn o gc-x">Lewati</button></div>';
+document.body.appendChild(m);
+var num=m.querySelector('.gc-n'),title=m.querySelector('.gc-t'),btn=m.querySelector('.gc-x'),last,timer,step=0,TOTAL=34,over=false,closed=false;
+function sorot(k,cls){if(last)last.className='';last=m.querySelector('[data-k="'+k+'"]');last.className=cls||'on';num.textContent=k}
+function tutup(){if(closed)return;closed=true;clearTimeout(timer);m.remove();done()}
+function hasil(){if(over)return;over=true;clearTimeout(timer);
+if(seat){sorot(seat,'win');title.textContent='Kursi kamu';num.classList.add('win');btn.textContent='Lihat tiket halu'}
+else{if(last)last.className='';num.textContent='✕';num.classList.add('lose');title.textContent='Tidak kebagian kursi';btn.textContent='Tutup'}
+timer=setTimeout(tutup,seat?1800:1600)}
+function putar(){if(step++>=TOTAL){hasil();return}sorot(acak());timer=setTimeout(putar,50+Math.pow(step/TOTAL,3)*330)}
+btn.onclick=function(){if(over)tutup();else hasil()};
+if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches){TOTAL=10;m.classList.add('tenang')}putar()}
+H.gacha=gacha;
 // ---------- apply teater
 H.apply=function(){var q=new URLSearchParams(location.search).get('s');var box=$('ap'),mine=$('mine');
 function list(){var s=load(),a=s.ap||[];mine.innerHTML=a.length?a.map(function(x){var sh=showBy(x.show)||['','2026-12-01','','Show',''];return '<div class="ap-i '+x.status+'"><div><b>'+esc(sh[3])+'</b><small>'+tglPanjang(sh[1])+'</small><small>'+(x.type==='ofc'?'OFC':'General')+'</small></div><div class="ap-s">'+(x.status==='wait'?'<button class="hx-btn" data-id="'+x.id+'">Lihat hasil undian</button>':x.status==='win'?'<b>MENANG</b><small>Kursi '+x.seat+'</small><button class="hx-btn" data-tk="'+x.id+'">Lihat tiket halu</button> <button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>':'<b>BELUM BERUNTUNG</b><small>Poin dikembalikan</small><button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>')+'</div></div>'}).join(''):'<p class="empty">Belum ada apply.</p>'}
 mine.onclick=function(e){var b=e.target.closest('button');if(!b)return;var s=load();
-if(b.dataset.id){var x=s.ap.filter(function(a){return a.id===b.dataset.id})[0];if(!x||x.status!=='wait')return;b.disabled=true;b.textContent='Mengundi…';
-setTimeout(function(){var s=load(),x=s.ap.filter(function(a){return a.id===b.dataset.id})[0];if(!x||x.status!=='wait'){list();return}var win=Math.random()<(x.type==='ofc'?0.7:0.45);x.status=win?'win':'lose';if(win)x.seat=String.fromCharCode(65+Math.floor(Math.random()*8))+'-'+(1+Math.floor(Math.random()*20));else{s.pt+=PRICE;addTx(s,{kind:'refund',code:'REFUND',title:'Pengembalian Poin Undian',item:'Refund apply teater',amount:PRICE,method:'HALU_POINT'})}save(s);list();toast(win?'Selamat, kamu menang undian!':'Belum beruntung, poin dikembalikan')},1400)}
+if(b.dataset.id){var x=s.ap.filter(function(a){return a.id===b.dataset.id})[0];if(!x||x.status!=='wait')return;b.disabled=true;
+var win=Math.random()<(x.type==='ofc'?0.7:0.45);x.status=win?'win':'lose';if(win)x.seat=seatBaru(s.ap,x);else{s.pt+=PRICE;addTx(s,{kind:'refund',code:'REFUND',title:'Pengembalian Poin Undian',item:'Refund apply teater',amount:PRICE,method:'HALU_POINT'})}save(s);
+var sw=showBy(x.show);gacha(win?x.seat:null,function(){list();if(win)share('tiket-halu',null,null,ticket(sw,x.seat));else toast('Belum beruntung, poin dikembalikan')})}
 else if(b.dataset.tk){var z=s.ap.filter(function(a){return a.id===b.dataset.tk})[0],zs=showBy(z.show);share('tiket-halu',null,null,ticket(zs,z.seat))}
 else if(b.dataset.share){var y=s.ap.filter(function(a){return a.id===b.dataset.share})[0],sh=showBy(y.show);share('hasil-undian-halu',[ 'HASIL UNDIAN TEATER',sh[3],tglPanjang(sh[1]),y.status==='win'?'MENANG · KURSI '+y.seat:'BELUM BERUNTUNG'],y.status==='win'?'#1faa59':'#e20514')}};
 list();
