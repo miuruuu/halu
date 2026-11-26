@@ -40,13 +40,13 @@ if(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matc
 H.gacha=gacha;
 // ---------- apply teater
 H.apply=function(){var q=new URLSearchParams(location.search).get('s');var box=$('ap'),mine=$('mine');
-function list(){var s=load(),a=s.ap||[];mine.innerHTML=a.length?a.map(function(x){var sh=showBy(x.show)||['','2026-12-01','','Show',''];return '<div class="ap-i '+x.status+'"><div><b>'+esc(sh[3])+'</b><small>'+tglPanjang(sh[1])+'</small><small>'+(x.type==='ofc'?'OFC':'General')+'</small></div><div class="ap-s">'+(x.status==='wait'?'<button class="hx-btn" data-id="'+x.id+'">Lihat hasil undian</button>':x.status==='win'?'<b>MENANG</b><small>Kursi '+x.seat+'</small><button class="hx-btn" data-tk="'+x.id+'">Lihat tiket halu</button> <button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>':'<b>BELUM BERUNTUNG</b><small>Poin dikembalikan</small><button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>')+'</div></div>'}).join(''):'<p class="empty">Belum ada apply.</p>'}
+function list(){var s=load(),a=s.ap||[];mine.innerHTML=a.length?a.map(function(x){var sh=showBy(x.show)||['','2026-12-01','','Show',''];return '<div class="ap-i '+x.status+'"><div><b>'+esc(sh[3])+'</b><small>'+tglPanjang(sh[1])+'</small><small>'+(x.type==='ofc'?'OFC':'General')+'</small></div><div class="ap-s">'+(x.status==='wait'?'<button class="hx-btn" data-id="'+x.id+'">Lihat hasil undian</button>':x.status==='win'?'<b>MENANG</b><small>Kursi '+x.seat+'</small><button class="hx-btn" data-tk="'+x.id+'">Lihat tiket halu</button> <button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>':'<b>KALAH</b><small>Poin dikembalikan</small><button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>')+'</div></div>'}).join(''):'<p class="empty">Belum ada apply.</p>'}
 mine.onclick=function(e){var b=e.target.closest('button');if(!b)return;var s=load();
 if(b.dataset.id){var x=s.ap.filter(function(a){return a.id===b.dataset.id})[0];if(!x||x.status!=='wait')return;b.disabled=true;
 var win=Math.random()<(x.type==='ofc'?0.7:0.45);x.status=win?'win':'lose';if(win)x.seat=seatBaru(s.ap,x);else{s.pt+=PRICE;addTx(s,{kind:'refund',code:'REFUND',title:'Pengembalian Poin Undian',item:'Refund apply teater',amount:PRICE,method:'HALU_POINT'})}save(s);
-var sw=showBy(x.show);gacha(win?x.seat:null,function(){list();if(win)share('tiket-halu',null,null,ticket(sw,x.seat));else toast('Belum beruntung, poin dikembalikan')})}
+var sw=showBy(x.show);gacha(win?x.seat:null,function(){list();if(win)share('tiket-halu',null,null,ticket(sw,x.seat));else toast('Kalah, poin dikembalikan')})}
 else if(b.dataset.tk){var z=s.ap.filter(function(a){return a.id===b.dataset.tk})[0],zs=showBy(z.show);share('tiket-halu',null,null,ticket(zs,z.seat))}
-else if(b.dataset.share){var y=s.ap.filter(function(a){return a.id===b.dataset.share})[0],sh=showBy(y.show);share('hasil-undian-halu',[ 'HASIL UNDIAN TEATER',sh[3],tglPanjang(sh[1]),y.status==='win'?'MENANG · KURSI '+y.seat:'BELUM BERUNTUNG'],y.status==='win'?'#1faa59':'#e20514')}};
+else if(b.dataset.share){var y=s.ap.filter(function(a){return a.id===b.dataset.share})[0];share('hasil-undian-halu',null,null,surat(y,showBy(y.show)))}};
 list();
 var sh=showBy(q);if(!sh){box.innerHTML='<div class="sh-l">'+SHOWS.map(function(s){return '<a class="sc-row" href="teater-tiket.html?s='+s[0]+'"><div class="sc-d">'+dt(s[1]).getDate()+'<small>'+(dt(s[1]).getMonth()===10?'NOV':'DES')+'</small></div><div><span class="tag">Team '+s[4]+'</span><b style="display:inline">'+esc(s[3])+'</b><br><small>'+s[2]+' WIB</small></div></a>'}).join('')+'</div>';return}
 var st=load(),ofc=st.ofc&&st.ofc>Date.now();
@@ -80,6 +80,29 @@ x.save();x.translate(540,700);x.rotate(-Math.PI/7);x.globalAlpha=0.16;x.fillStyl
 x.save();x.translate(540,1130);x.rotate(-0.05);x.strokeStyle='#e20514';x.lineWidth=8;x.strokeRect(-420,-60,840,100);x.fillStyle='#e20514';x.font='800 44px '+F;x.fillText('PARODI · BUKAN BUKTI ASLI',0,8);x.restore();
 x.fillStyle='#666';x.font='600 34px '+F;x.fillText('halu.jeketoy.lol',540,1275);return c}
 H.card=card;
+// kartu "pesan masuk" gaya halu: susunan & kalimat buatan sendiri, bukan tiruan email resmi
+function surat(y,sh){var win=y.status==='win',c=document.createElement('canvas');c.width=1080;c.height=1350;var x=c.getContext('2d'),F='"Plus Jakarta Sans",system-ui,sans-serif';
+var warna=win?'#1faa59':'#e20514',p=load().profile||{},nama=(p.nk||p.name||'Pengunjung Halu').slice(0,24);
+function t(s,px,py,size,col,w,al){x.textAlign=al||'left';x.fillStyle=col;x.font=(w||600)+' '+size+'px '+F;x.fillText(s,px,py)}
+function fit(s,px,py,size,col,w,max){do{x.font=w+' '+size+'px '+F;size-=2}while(x.measureText(s).width>max&&size>20);x.textAlign='left';x.fillStyle=col;x.fillText(s,px,py)}
+function box(px,py,wd,ht,r,col){x.fillStyle=col;x.beginPath();x.moveTo(px+r,py);x.arcTo(px+wd,py,px+wd,py+ht,r);x.arcTo(px+wd,py+ht,px,py+ht,r);x.arcTo(px,py+ht,px,py,r);x.arcTo(px,py,px+wd,py,r);x.fill()}
+x.fillStyle='#2b1d3a';x.fillRect(0,0,1080,1350);
+t('Kotak Masuk Halu',60,100,48,'#fff',800);t('khayalan · 1 pesan',1020,100,30,'#c9b8dd',600,'right');
+box(40,140,1000,1150,40,'#fffaf2');
+fit('Hasil undian halu: kamu '+(win?'MENANG':'KALAH'),90,240,50,'#1d1029',800,900);
+x.fillStyle='#7a3cc2';x.beginPath();x.arc(135,325,46,0,7);x.fill();t('WH',135,339,36,'#fff',800,'center');
+t('Loket Khayalan',205,315,34,'#1d1029',800);t('loket@halu.example · untuk '+nama,205,357,28,'#7a6a8a',600);
+x.fillStyle='#e8dfcf';x.fillRect(90,400,900,3);
+fit('Hai '+nama+',',90,470,36,'#1d1029',600,900);
+t(win?'Undianmu tembus. Selamat berkhayal!':'Undianmu belum tembus kali ini.',90,525,34,'#1d1029',600);
+box(90,575,900,170,28,warna);t(win?'MENANG':'KALAH',540,690,96,'#fff',800,'center');
+var d=dt(sh[1]),rows=[['Show',sh[3]],['Hari',HR[d.getDay()]+', '+d.getDate()+' '+BLN[d.getMonth()]+' '+d.getFullYear()],['Jam',sh[2]+' WIB'],[win?'Kursi':'Poin',win?y.seat:'200.000 Halu Point kembali']];
+rows.forEach(function(r,i){var py=820+i*78;t(r[0],90,py,32,'#7a6a8a',600);fit(r[1],300,py,34,'#1d1029',800,690);x.fillStyle='#eee5d6';x.fillRect(90,py+28,900,2)});
+t('Pesan ini cuma permainan. Tidak ada tiket asli,',90,1160,28,'#7a6a8a',600);t('dan tidak bisa dipakai masuk ke mana pun.',90,1200,28,'#7a6a8a',600);t('halu.jeketoy.lol',90,1255,28,'#7a3cc2',800);
+x.save();x.translate(540,780);x.rotate(-Math.PI/6);x.globalAlpha=0.13;t('HALU',0,120,420,'#e20514',800,'center');x.restore();
+x.save();x.translate(800,1245);x.rotate(-0.06);x.strokeStyle='#e20514';x.lineWidth=6;x.strokeRect(-205,-42,410,66);t('BUKAN EMAIL ASLI',0,6,34,'#e20514',800,'center');x.restore();
+return c}
+H.surat=surat;
 // tanda tim buatan sendiri: satu bentuk sesuai tim show, dalam lingkaran
 function tanda(x,tim,cx,cy){var col={Love:'#e20785',Dream:'#00838a',Passion:'#e0730a',Trainee:'#555f6b'}[tim]||'#555f6b';
 x.save();x.translate(cx,cy);x.fillStyle=col;x.beginPath();x.arc(0,0,58,0,7);x.fill();x.fillStyle='#fff';x.beginPath();
