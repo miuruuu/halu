@@ -323,3 +323,4 @@ details.ct summary{font-weight:700;font-size:15px;cursor:pointer}
 .gc.tenang .gc-n,.gc.tenang .dn-g i{animation:none}
 @keyframes gc-pop{0%{transform:scale(.6)}60%{transform:scale(1.2)}100%{transform:scale(1)}}
 @keyframes gc-blink{from{transform:scale(1)}to{transform:scale(1.45)}}
+.sc-row small.lagi{display:block;color:var(--red);font-weight:700}
