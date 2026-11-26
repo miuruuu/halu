@@ -310,3 +310,8 @@ details.ct summary{font-weight:700;font-size:15px;cursor:pointer}
 @keyframes gc-pop{0%{transform:scale(.6)}60%{transform:scale(1.25)}100%{transform:scale(1)}}
 @keyframes gc-blink{from{transform:scale(1)}to{transform:scale(1.7)}}
 .gc.tenang .gc-n,.gc.tenang .gc-g i{animation:none}
+.gc .mdl-b{max-width:520px;padding:18px 10px}
+.gc-g{grid-template-columns:14px repeat(20,minmax(0,1fr));gap:3px 2px}
+.gc-g b{font-size:8px;letter-spacing:-.03em}
+.gc-g i{height:18px}
+.gc-s{margin:4px 30px 10px}

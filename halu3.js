@@ -15,13 +15,14 @@ function showBy(id){for(var i=0;i<SHOWS.length;i++)if(SHOWS[i][0]===id)return SH
 function lineup(s){var m=(H.TEAMS[s[4]]||'').split(','),o=(+s[0].slice(1))*3,r=[];for(var i=0;i<Math.min(16,m.length);i++)r.push(m[(i+o)%m.length]);return r}
 function topupSoon(){toast('Halu Point kurang, isi dulu ya');setTimeout(function(){location.href='topup.html'},1200)}
 function addTx(s,o){o.id=o.id||H.nextId(o.kind,o.code);delete o.code;o.ts=Date.now();s.tx.unshift(o);return o.id}
-// ---------- gacha kursi: huruf A-J ke samping, nomor 1-20 ke belakang
-var HURUF='ABCDEFGHIJ',BARIS=20;
-function acak(){return HURUF[Math.floor(Math.random()*HURUF.length)]+'-'+(1+Math.floor(Math.random()*BARIS))}
+// ---------- gacha kursi: baris A (depan panggung) sampai J, nomor 1-20 dari kiri
+var HURUF='ABCDEFGHIJ',NOMOR=20;
+function acak(){return HURUF[Math.floor(Math.random()*HURUF.length)]+'-'+(1+Math.floor(Math.random()*NOMOR))}
 function seatBaru(ap,x){var pakai={},k;ap.forEach(function(a){if(a!==x&&a.show===x.show&&a.seat)pakai[a.seat]=1});do{k=acak()}while(pakai[k]);return k}
 function gacha(seat,done){
-var m=document.createElement('div');m.className='mdl gc';var head='<span></span>'+HURUF.split('').map(function(h){return '<b>'+h+'</b>'}).join(''),rows='';
-for(var r=1;r<=BARIS;r++){rows+='<b>'+r+'</b>';for(var c=0;c<HURUF.length;c++)rows+='<i data-k="'+HURUF[c]+'-'+r+'"></i>'}
+var m=document.createElement('div');m.className='mdl gc';var head='<span></span>',rows='';
+for(var n=1;n<=NOMOR;n++)head+='<b>'+n+'</b>';
+for(var r=0;r<HURUF.length;r++){rows+='<b>'+HURUF[r]+'</b>';for(var c=1;c<=NOMOR;c++)rows+='<i data-k="'+HURUF[r]+'-'+c+'"></i>'}
 m.innerHTML='<div class="mdl-b"><h3 class="gc-t">Mengundi kursi…</h3><div class="gc-n" aria-live="polite">?</div><div class="gc-s">PANGGUNG</div><div class="gc-g">'+head+rows+'</div><button class="hx-btn o gc-x">Lewati</button></div>';
 document.body.appendChild(m);
 var num=m.querySelector('.gc-n'),title=m.querySelector('.gc-t'),btn=m.querySelector('.gc-x'),last,timer,step=0,TOTAL=34,over=false,closed=false;
