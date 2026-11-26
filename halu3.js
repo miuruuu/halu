@@ -78,6 +78,14 @@ x.save();x.translate(540,700);x.rotate(-Math.PI/7);x.globalAlpha=0.16;x.fillStyl
 x.save();x.translate(540,1130);x.rotate(-0.05);x.strokeStyle='#e20514';x.lineWidth=8;x.strokeRect(-420,-60,840,100);x.fillStyle='#e20514';x.font='800 44px '+F;x.fillText('PARODI · BUKAN BUKTI ASLI',0,8);x.restore();
 x.fillStyle='#666';x.font='600 34px '+F;x.fillText('halu.jeketoy.lol',540,1275);return c}
 H.card=card;
+// tanda tim buatan sendiri: satu bentuk sesuai tim show, dalam lingkaran
+function tanda(x,tim,cx,cy){var col={Love:'#e20785',Dream:'#00838a',Passion:'#e0730a',Trainee:'#555f6b'}[tim]||'#555f6b';
+x.save();x.translate(cx,cy);x.fillStyle=col;x.beginPath();x.arc(0,0,58,0,7);x.fill();x.fillStyle='#fff';x.beginPath();
+if(tim==='Love'){x.moveTo(0,30);x.bezierCurveTo(-48,-2,-28,-40,0,-16);x.bezierCurveTo(28,-40,48,-2,0,30)}
+else if(tim==='Dream'){for(var i=0;i<10;i++){var r=i%2?15:35,a=-Math.PI/2+i*Math.PI/5;x[i?'lineTo':'moveTo'](r*Math.cos(a),r*Math.sin(a))}}
+else if(tim==='Passion'){x.moveTo(4,-36);x.bezierCurveTo(8,-14,32,-8,26,14);x.bezierCurveTo(20,40,-22,40,-26,12);x.bezierCurveTo(-28,-4,-14,-10,-12,-20);x.bezierCurveTo(-2,-12,2,-22,4,-36)}
+else{x.moveTo(0,-34);x.lineTo(28,0);x.lineTo(0,34);x.lineTo(-28,0)}
+x.closePath();x.fill();x.restore()}
 // tiket sobek versi halu: sengaja BEDA dari tiket asli (warna, huruf, cap besar)
 function ticket(sh,seat){var c=document.createElement('canvas');c.width=1400;c.height=800;var x=c.getContext('2d'),F='"Plus Jakarta Sans",system-ui,sans-serif',INK='#12343b';
 x.fillStyle='#bfeee6';x.fillRect(0,0,1400,800);
@@ -87,7 +95,7 @@ function fit(s,px,py,size,max){do{x.font='800 '+size+'px '+F;size-=2}while(x.mea
 x.save();x.translate(110,400);x.rotate(-Math.PI/2);t('HALU THEATER',0,0,56,INK,800,'center');x.restore();
 x.setLineDash([10,12]);x.strokeStyle=INK;x.lineWidth=3;x.beginPath();x.moveTo(170,30);x.lineTo(170,770);x.stroke();x.setLineDash([]);
 var d=dt(sh[1]),jam=sh[2].split(' ')[0],a=(+jam.slice(0,2))*60+(+jam.slice(3))-45,buka=String(Math.floor(a/60)).padStart(2,'0')+':'+String(a%60).padStart(2,'0');
-fit(sh[3],220,130,72,1120);t('TIKET KHAYALAN · TEAM '+sh[4].toUpperCase(),220,185,30,'#0f7a6c');
+fit(sh[3],220,130,72,950);tanda(x,sh[4],1270,115);t('TIKET KHAYALAN · TEAM '+sh[4].toUpperCase(),220,185,30,'#0f7a6c');
 t(HR[d.getDay()].toUpperCase(),220,300,50);t(d.getDate()+' '+BLN[d.getMonth()]+' '+d.getFullYear(),1330,300,50,INK,800,'right');
 t('Mulai '+jam+' WIB',220,370,40,INK,600);t('200.000 HALU POINT',1330,370,40,INK,600,'right');t('Pintu khayalan dibuka '+buka+' WIB',220,430,34,INK,600);
 x.lineWidth=4;x.strokeRect(220,480,1110,170);t('KURSI HALU',260,585,46);t(seat,1290,610,130,'#e20514',800,'right');
