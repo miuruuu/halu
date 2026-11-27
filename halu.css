@@ -132,7 +132,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
 .fl{display:flex;gap:16px;margin:8px 0 18px;flex-wrap:wrap}
 .fl label{display:block;font-size:12px;margin-bottom:2px}
 .fl select,.fl input{width:200px;height:48px;border:1px solid #b3b3b3;background:#fff;padding:0 12px;font:inherit;border-radius:0}
-.pf-2{display:grid;grid-template-columns:1fr;gap:20px;max-width:1100px;margin:0 auto}
+.pf-2{display:grid;grid-template-columns:minmax(0,1fr);gap:20px;max-width:1100px;margin:0 auto}
 .pf-s{background:#fff;padding:24px 20px;box-shadow:0 1px 8px #0001;align-self:start}
 .pf-s .av{width:70px;height:70px;margin:12px auto;color:#a3a3a3}
 .pf-s h3{text-align:center;font-size:18px;margin:6px 0}
@@ -151,11 +151,13 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
 .hm-mem .tx2{align-self:flex-end;padding:0 0 14px 14px;font-size:12px}.hm-mem .tx2 b{display:block;font-size:20px}
 .hm-lib{background:#db2468;color:#fff;margin-top:20px;padding:34px 24px;font-size:15px}.hm-lib b{display:block;font-size:28px;font-weight:800;margin:4px 0 10px}
 .hm-sp{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:20px}.hm-sp div{padding:26px 18px;background:#e6e6e6;font-size:13px}.hm-sp div+div{background:#f2f2f2}.hm-sp b{display:block;font-size:24px;margin:4px 0 8px}
+.pf-2>*{min-width:0}
+.hm-up{overflow-x:auto;-webkit-overflow-scrolling:touch}
 .hm-up h2{font-size:28px;margin:28px 0 8px}
 .hm-up table{width:100%;border-collapse:collapse;font-size:12px;background:#fff}.hm-up th{background:#00799a;color:#fff;text-align:left;padding:14px 10px;font-weight:500}.hm-up td{padding:12px 10px;border-bottom:1px solid #eee}
 .hm-up .go{display:inline-flex;width:20px;height:20px;border-radius:50%;background:var(--red);color:#fff;align-items:center;justify-content:center;text-decoration:none;font-size:11px}
 @media(min-width:768px){.hx-h{height:72px}.hx-main{padding-top:96px}}
-@media(min-width:1024px){.hx-hi{padding:0 60px}.hx-logo{position:static;transform:none;margin-left:32px}.hx-hi>div:first-child{display:flex;align-items:center}.hx-me{display:flex}.pg-t nav{display:flex}.pf-2{grid-template-columns:1fr 300px}}
+@media(min-width:1024px){.hx-hi{padding:0 60px}.hx-logo{position:static;transform:none;margin-left:32px}.hx-hi>div:first-child{display:flex;align-items:center}.hx-me{display:flex}.pg-t nav{display:flex}.pf-2{grid-template-columns:minmax(0,1fr) 300px}}
 .tx .ic{position:relative}.tx .ic::after{content:"";position:absolute;inset:0;margin:auto;width:14px;height:14px;border:2px solid #fff;border-radius:50%;box-sizing:border-box}
 /* ukuran hasil pengukuran: invoice */
 .inv-card{max-width:490px;margin:16px auto 0}
