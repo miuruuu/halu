@@ -342,3 +342,7 @@ details.ct summary{font-weight:700;font-size:15px;cursor:pointer}
 @media(max-width:699px){.dn-k.hp{display:block}}
 .cb-u{text-align:center}.cb-n{font-size:64px;font-weight:800;line-height:1.2;color:var(--red);font-variant-numeric:tabular-nums}
 .cb-l{display:flex;flex-wrap:wrap;gap:6px}.cb-l button{border:1px solid #8884;background:none;color:inherit;border-radius:6px;padding:6px 10px;font:700 13px inherit;cursor:pointer}
+
+.tp-bns{margin:10px 0 0;font-size:14px;color:var(--red)}
+.tp-h{font-size:15px;margin:18px 0 2px}.tp-k{font-size:12px;color:#666;margin:0 0 8px}
+.tp-t{width:100%;border-collapse:collapse;font-size:13px;text-align:right}.tp-t th,.tp-t td{padding:7px 6px;border-bottom:1px solid #8883}.tp-t th:first-child,.tp-t td:first-child{text-align:left}

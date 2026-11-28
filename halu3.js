@@ -6,7 +6,7 @@ var BIO=window.HALU_BIO||{},PHO=window.HALU_PHOTOS||{};
 var SIL='<svg viewBox="0 0 24 24" fill="#b3b3b3" width="48" height="48"><path d="M12 12a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 2c-4.4 0-8 2.2-8 5v1h16v-1c0-2.8-3.6-5-8-5Z"/></svg>';
 var PRICE=200000;
 // id, tanggal (ISO), jam, judul, tim
-var SHOWS=[['s1','2026-11-29','19:00 - 21:00','KIRA-KIRA Halu','Trainee'],['s2','2026-12-02','19:00 - 21:00','Pertaruhan Halu','Passion'],['s3','2026-12-03','19:00 - 21:00','Cara Meminum Ramune Halu','Love'],['s4','2026-12-05','16:00 - 18:00','Pajama Halu','Dream'],['s5','2026-12-09','19:00 - 21:00','Aturan Anti Cinta Halu','Love'],['s6','2026-12-12','14:00 - 16:00','Ingin Bertemu Halu','Passion'],['s7','2026-12-13','19:00 - 21:00','Sambil Menggandeng Halu','Dream'],['s8','2026-12-19','14:00 - 16:00','KIRA-KIRA Halu','Trainee']];
+var SHOWS=[['s1','2026-11-29','19:00 - 21:00','KIRA-KIRA Doang','Trainee'],['s2','2026-12-02','19:00 - 21:00','Pertaruhan Uang Kos','Passion'],['s3','2026-12-03','19:00 - 21:00','Cara Meminum Es Teh Plastik','Love'],['s4','2026-12-05','16:00 - 18:00','Daster Drive','Dream'],['s5','2026-12-09','19:00 - 21:00','Aturan Anti Chat Dibalas','Love'],['s6','2026-12-12','14:00 - 16:00','Ingin Bertemu Tanggal Gajian','Passion'],['s7','2026-12-13','19:00 - 21:00','Sambil Menggandeng Galon','Dream'],['s8','2026-12-19','14:00 - 16:00','KIRA-KIRA Doang','Trainee']];
 var BLN=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
 var HR=['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
 function dt(iso){var p=iso.split('-');return new Date(+p[0],+p[1]-1,+p[2])}
