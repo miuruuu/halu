@@ -80,6 +80,13 @@ $('cb-lihat').onclick=function(){denah((load().coba||[])[0])};
 $('cb-denah').onclick=function(){denah()};
 $('cb-h').onclick=function(e){var b=e.target.closest('button');if(b)denah(b.dataset.k)};
 gambar()};
+// ---------- landing: layar bergerak
+H.landing=function(){var v=$('lp'),s=v.querySelectorAll('.lp-s'),b=v.querySelectorAll('.lp-b'),p=$('lpp'),n=0,t=0,jalan=true,LAMA=5000,lalu=Date.now();
+var warna=['#ff4d8d','#4dd2ff','#ffd24d','#9dff6b','#c58bff'],h='';for(var i=0;i<26;i++){var w=warna[i%5];h+='<span style="left:'+(i*4-1)+'%;height:'+(34+(i*37)%30)+'px;animation-delay:-'+((i*13)%20)/10+'s"><u style="background:'+w+';box-shadow:0 0 10px 2px '+w+'"></u></span>'}$('lpc').innerHTML=h;
+function ke(k){n=(k+s.length)%s.length;t=0;v.dataset.s=n;for(var i=0;i<s.length;i++){s[i].classList.toggle('on',i===n);b[i].firstChild.style.width=i<n?'100%':'0'}}
+for(var j=0;j<b.length;j++)(function(k){b[k].onclick=function(){ke(k)}})(j);
+p.onclick=function(){jalan=!jalan;p.textContent=jalan?'❚❚':'▶';v.classList.toggle('jeda',!jalan)};
+setInterval(function(){var now=Date.now(),d=now-lalu;lalu=now;if(!jalan||document.hidden)return;t+=Math.min(d,200);b[n].firstChild.style.width=Math.min(100,t/LAMA*100)+'%';if(t>=LAMA)ke(n+1)},100)};
 // ---------- apply teater
 H.apply=function(){var siap=false;var q=new URLSearchParams(location.search).get('s');var box=$('ap'),mine=$('mine');
 function list(){var s=load(),a=s.ap||[];mine.innerHTML=a.length?a.map(function(x){var sh=showBy(x.show)||['','2026-12-01','','Show',''];return '<div class="ap-i '+x.status+'"><div><b>'+esc(sh[3])+'</b><small>'+tglPanjang(sh[1])+'</small><small>'+(x.type==='ofc'?'OFC':'General')+'</small></div><div class="ap-s">'+(x.status==='wait'?'<button class="hx-btn" data-id="'+x.id+'">Lihat hasil undian</button>':x.status==='win'?'<b>MENANG</b><small>Kursi '+x.seat+'</small><button class="hx-btn" data-tk="'+x.id+'">Lihat tiket halu</button> <button class="hx-btn o" data-kursi="'+x.seat+'">Lihat posisi kursi</button> <button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>':'<b>KALAH</b><small>Poin dikembalikan</small><button class="hx-btn o" data-share="'+x.id+'">Bagikan</button>')+'</div></div>'}).join(''):'<p class="empty">Belum ada apply.</p>';if(siap)render()}
